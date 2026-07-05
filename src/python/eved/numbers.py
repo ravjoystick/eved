@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Hebrew gematria (alphabetic numeral) map for integers 1–100.
 
-This module provides the ``Numbers`` class, which wraps the ``data/numbers/map.py``
+This module provides the Numbers class, which wraps the data/numbers/map.py
 literal.  Each key is an integer (1–100) and each value is a dict containing the
 Hebrew letter(s), their Unicode code points, HTML entities, and the standard
 transliterated pronunciation.
@@ -38,7 +38,7 @@ class Numbers(dict):
     """
 
     def __init__(self, *arg, **kw):
-        """Initialise as an empty dict; data is loaded via ``get_numbers_map``."""
+        """Initialise as an empty dict; data is loaded via get_numbers_map."""
         super(Numbers, self).__init__(*arg, **kw)
 
     @property
@@ -46,7 +46,7 @@ class Numbers(dict):
         """Return the absolute path to the Hebrew numbers map file.
 
         Returns:
-            str: Absolute path to ``eved/data/numbers/map.py``.
+            str: Absolute path to eved/data/numbers/map.py.
 
         Example:
             >>> from numbers import Numbers
@@ -59,15 +59,15 @@ class Numbers(dict):
     def get_numbers_map(cls):
         """Load and return the full Hebrew gematria map.
 
-        Reads ``data/numbers/map.py`` via ``eval_file`` and returns the bare
+        Reads data/numbers/map.py via eval_file and returns the bare
         Python dict it contains.  Keys are integers 1–100; values are dicts
-        with the keys ``hebrew``, ``unicode``, ``html``, and ``hebrew_say``.
+        with the keys hebrew, unicode, html, and hebrew_say.
 
         Returns:
             dict[int, dict]: Mapping of integer → Hebrew numeral entry.
 
         Raises:
-            FileNotFoundError: If ``data/numbers/map.py`` is missing.
+            FileNotFoundError: If data/numbers/map.py is missing.
 
         Example:
             >>> from numbers import Numbers

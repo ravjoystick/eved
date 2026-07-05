@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Bible books reference map for the eved project.
 
-This module provides the ``Books`` class, which wraps the ``data/books/map.py``
-literal.  Each key is an English book name (e.g. ``'Genesis'``, ``'1 Kings'``)
+This module provides the Books class, which wraps the data/books/map.py
+literal.  Each key is an English book name (e.g. 'Genesis', '1 Kings')
 and each value is a dict containing the Hebrew name, pronunciation, and
 related metadata.
 
@@ -27,7 +27,7 @@ class Books(dict):
 
     The map covers all Old Testament books and the beginning of the New
     Testament.  Keys are the English book names used throughout the category
-    verse data (e.g. ``'1 Kings'``, ``'Psalms'``) so that lookups are
+    verse data (e.g. '1 Kings', 'Psalms') so that lookups are
     consistent across the whole project.
 
     Example:
@@ -42,8 +42,8 @@ class Books(dict):
         """Initialise and immediately load the books map from disk.
 
         Args:
-            *arg: Passed through to ``dict.__init__``.
-            **kw: Passed through to ``dict.__init__``.
+            *arg: Passed through to dict.__init__.
+            **kw: Passed through to dict.__init__.
         """
         super(Books, self).__init__(*arg, **kw)
         self.file = self.get_books_path
@@ -54,7 +54,7 @@ class Books(dict):
         """Return the absolute path to the Bible books map file.
 
         Returns:
-            str: Absolute path to ``eved/data/books/map.py``.
+            str: Absolute path to eved/data/books/map.py.
 
         Example:
             >>> from books import Books
@@ -68,13 +68,13 @@ class Books(dict):
         """Return the map entry for a single Bible book by its English name.
 
         Args:
-            book (str): English book name, e.g. ``'Genesis'`` or ``'1 Kings'``.
+            book (str): English book name, e.g. 'Genesis' or '1 Kings'.
 
         Returns:
-            dict: Entry with at minimum the keys ``hebrew`` and ``hebrew_say``.
+            dict: Entry with at minimum the keys hebrew and hebrew_say.
 
         Raises:
-            NameError: If ``book`` is not a recognised key in the map.
+            NameError: If book is not a recognised key in the map.
 
         Example:
             >>> from books import Books

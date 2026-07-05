@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Filesystem path resolution and JSON generation utilities for the eved project.
 
-This module provides the ``FilePath`` class, which resolves absolute paths to
+This module provides the FilePath class, which resolves absolute paths to
 every data directory and file the project uses, along with helper functions for
-loading Python dict files via ``eval`` and for generating the JSON mirrors of
+loading Python dict files via eval and for generating the JSON mirrors of
 the category data.
 
 Typical usage::
@@ -35,20 +35,20 @@ BOOKS_FOLDER = 'books'
 
 
 def eval_file(filepath):
-    """Read a ``.py`` file that contains a bare Python literal and return it.
+    """Read a .py file that contains a bare Python literal and return it.
 
     The category and map data files are stored as plain Python dicts (no
     assignment, just a literal).  This function reads those files and
-    evaluates them with the built-in ``eval``.
+    evaluates them with the built-in eval.
 
     Args:
         filepath (str | Path): Path to the Python literal file.
 
     Returns:
-        Any: The Python object described in the file — typically a ``dict``.
+        Any: The Python object described in the file — typically a dict.
 
     Raises:
-        FileNotFoundError: If ``filepath`` does not exist.
+        FileNotFoundError: If filepath does not exist.
         SyntaxError: If the file content is not valid Python.
 
     Example:
@@ -61,11 +61,11 @@ def eval_file(filepath):
 
 
 def create_all_jsons():
-    """Generate a JSON mirror for every category ``.py`` file.
+    """Generate a JSON mirror for every category .py file.
 
-    Reads every ``.py`` file under ``data/categories/python/``, evaluates it
+    Reads every .py file under data/categories/python/, evaluates it
     as a Python dict, and writes the result as a formatted JSON file into
-    ``data/categories/json/``.  Existing JSON files are overwritten.
+    data/categories/json/.  Existing JSON files are overwritten.
 
     Returns:
         list[Path]: Paths of every JSON file that was written.
@@ -93,13 +93,13 @@ def create_all_jsons():
 
 
 def _create_json(filepath, data):
-    """Write ``data`` to a JSON file named after the stem of ``filepath``.
+    """Write data to a JSON file named after the stem of filepath.
 
-    The output file is placed in ``data/categories/json/`` regardless of where
-    ``filepath`` lives.  The filename is derived from ``filepath``'s stem.
+    The output file is placed in data/categories/json/ regardless of where
+    filepath lives.  The filename is derived from filepath's stem.
 
     Args:
-        filepath (str | Path): Path to the source ``.py`` file — used only to
+        filepath (str | Path): Path to the source .py file — used only to
             derive the output filename.
         data (dict): The Python dict to serialise as JSON.
 
@@ -134,11 +134,11 @@ class FilePath:
 
     All paths are derived from the location of this module, so the project
     can be moved freely on disk without any hardcoded paths.  All properties
-    return ``pathlib.Path`` objects.
+    return pathlib.Path objects.
 
     Attributes:
-        root (Path): Absolute path to the ``eved`` package root directory
-            (the folder that contains ``data/``).
+        root (Path): Absolute path to the eved package root directory
+            (the folder that contains data/).
 
     Example:
         >>> from filepath import FilePath
@@ -158,7 +158,7 @@ class FilePath:
         """Return the absolute path to the eved package root.
 
         Returns:
-            Path: Absolute path, e.g. ``Path('/path/to/src/python/eved')``.
+            Path: Absolute path, e.g. Path('/path/to/src/python/eved').
 
         Example:
             >>> from pathlib import Path
@@ -170,13 +170,13 @@ class FilePath:
 
     @property
     def get_data(self):
-        """Return the absolute path to the ``data/`` directory.
+        """Return the absolute path to the data/ directory.
 
         Returns:
-            Path: Absolute path to ``eved/data``.
+            Path: Absolute path to eved/data.
 
         Raises:
-            ValueError: If the ``data/`` directory does not exist.
+            ValueError: If the data/ directory does not exist.
 
         Example:
             >>> from filepath import FilePath
@@ -190,13 +190,13 @@ class FilePath:
 
     @property
     def get_tests(self):
-        """Return the absolute path to the ``tests/`` directory.
+        """Return the absolute path to the tests/ directory.
 
         Returns:
             Path: Absolute path to the tests directory.
 
         Raises:
-            ValueError: If the ``tests/`` directory does not exist.
+            ValueError: If the tests/ directory does not exist.
 
         Example:
             >>> from filepath import FilePath
@@ -210,10 +210,10 @@ class FilePath:
 
     @property
     def get_caterogies(self):
-        """Return the absolute path to the ``data/categories/`` directory.
+        """Return the absolute path to the data/categories/ directory.
 
         Returns:
-            Path: Absolute path to ``eved/data/categories``.
+            Path: Absolute path to eved/data/categories.
 
         Example:
             >>> from filepath import FilePath
@@ -224,13 +224,13 @@ class FilePath:
 
     @property
     def get_categories_python(self):
-        """Return the absolute path to ``data/categories/python/``.
+        """Return the absolute path to data/categories/python/.
 
         This is the directory that contains the authoritative Python dict
         files for every category.
 
         Returns:
-            Path: Absolute path to ``eved/data/categories/python``.
+            Path: Absolute path to eved/data/categories/python.
 
         Example:
             >>> from filepath import FilePath
@@ -241,13 +241,13 @@ class FilePath:
 
     @property
     def get_categories_json(self):
-        """Return the absolute path to ``data/categories/json/``.
+        """Return the absolute path to data/categories/json/.
 
         This is the directory that contains the generated JSON mirrors of
         the category data files.
 
         Returns:
-            Path: Absolute path to ``eved/data/categories/json``.
+            Path: Absolute path to eved/data/categories/json.
 
         Example:
             >>> from filepath import FilePath
@@ -261,7 +261,7 @@ class FilePath:
         """Return the absolute path to the Bible books map file.
 
         Returns:
-            Path: Absolute path to ``eved/data/books/map.py``.
+            Path: Absolute path to eved/data/books/map.py.
 
         Example:
             >>> from filepath import FilePath
@@ -275,7 +275,7 @@ class FilePath:
         """Return the absolute path to the Hebrew numbers map file.
 
         Returns:
-            Path: Absolute path to ``eved/data/numbers/map.py``.
+            Path: Absolute path to eved/data/numbers/map.py.
 
         Example:
             >>> from filepath import FilePath

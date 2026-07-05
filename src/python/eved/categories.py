@@ -3,8 +3,8 @@
 
 Each *category* represents one attribute of God documented by Richard Dawkins
 in *The God Delusion* (Chapter 2).  The authoritative data lives in
-``data/categories/python/`` as bare Python dict literals; this module
-dynamically loads all of them at import time into ``__all__`` and exposes
+data/categories/python/ as bare Python dict literals; this module
+dynamically loads all of them at import time into __all__ and exposes
 convenience wrappers for iteration, lookup, and JSON export.
 
 Typical usage::
@@ -36,10 +36,10 @@ __all__ = [
 
 
 def get_all_categories():
-    """Return a ``Category`` object for every loaded category.
+    """Return a Category object for every loaded category.
 
     Returns:
-        list[Category]: One ``Category`` per file in ``data/categories/python/``,
+        list[Category]: One Category per file in data/categories/python/,
         sorted by filename (alphabetical).
 
     Example:
@@ -54,7 +54,7 @@ def get_all_categories():
 
 
 def category_names():
-    """Return the ``name`` string for every loaded category.
+    """Return the name string for every loaded category.
 
     Returns:
         list[str]: Category name strings sorted alphabetically by filename.
@@ -73,9 +73,9 @@ def category_names():
 class Category(dict):
     """A single God-character category, backed by its Python dict literal.
 
-    ``Category`` extends ``dict``, so all verse data is accessible via normal
+    Category extends dict, so all verse data is accessible via normal
     dict operations.  On construction the matching entry is located in
-    ``__all__`` by ``name`` and the instance is populated with its data.
+    __all__ by name and the instance is populated with its data.
 
     Attributes:
         category (str): The internal snake_case name of this category.
@@ -98,17 +98,17 @@ class Category(dict):
     TYPE = None
 
     def __init__(self, category, is_true=False):
-        """Initialise the Category by looking up ``category`` in ``__all__``.
+        """Initialise the Category by looking up category in __all__.
 
         Args:
             category (str): The snake_case name of the category, e.g.
-                ``'jealous'`` or ``'ethnic_cleanser'``.
-            is_true (bool): Optional initial value for the ``true`` flag.
-                Defaults to ``False``.
+                'jealous' or 'ethnic_cleanser'.
+            is_true (bool): Optional initial value for the true flag.
+                Defaults to False.
 
         Raises:
-            ValueError: If no entry with ``name == category`` exists in
-                ``__all__``.
+            ValueError: If no entry with name == category exists in
+                __all__.
 
         Example:
             >>> from categories import Category
@@ -135,7 +135,7 @@ class Category(dict):
         """Return an unambiguous string representation.
 
         Returns:
-            str: ``'Category(<name>)'``.
+            str: 'Category(<name>)'.
 
         Example:
             >>> from categories import Category
@@ -148,7 +148,7 @@ class Category(dict):
         """Return the human-readable display name.
 
         Returns:
-            str: The ``nice_name`` value for this category.
+            str: The nice_name value for this category.
 
         Example:
             >>> from categories import Category
@@ -186,9 +186,9 @@ class Category(dict):
 
     @classmethod
     def create(cls, category):
-        """Factory method that creates a ``Category`` by name.
+        """Factory method that creates a Category by name.
 
-        Equivalent to calling ``Category(category)`` directly; provided as a
+        Equivalent to calling Category(category) directly; provided as a
         named constructor for readability.
 
         Args:
@@ -208,8 +208,8 @@ class Category(dict):
     def to_json(self):
         """Write this category's data to its JSON file and return the path.
 
-        The output file is placed in ``data/categories/json/`` with the same
-        stem as the source ``.py`` file.  Any existing JSON file is overwritten.
+        The output file is placed in data/categories/json/ with the same
+        stem as the source .py file.  Any existing JSON file is overwritten.
 
         Returns:
             str: Absolute path of the JSON file that was written.
