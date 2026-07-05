@@ -64,7 +64,7 @@ def _create_json(filepath, data):
     return json_file
 
 
-"""
+r"""
   ____| _)  |         _ \         |    |           ___|  |
   |      |  |   _ \  |   |  _` |  __|  __ \       |      |   _` |   __|   __|
   __|    |  |   __/  ___/  (   |  |    | | |      |      |  (   | \__ \ \__ \
@@ -95,7 +95,7 @@ class FilePath(object):
         tests = os.path.join(self.root, TESTS_FOLDER)
         if os.path.exists(tests):
             return tests
-            raise ValueError('Missing tests folder!')
+        raise ValueError('Missing tests folder!')
 
     @property
     def get_caterogies(self):

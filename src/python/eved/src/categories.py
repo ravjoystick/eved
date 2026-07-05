@@ -1,73 +1,32 @@
 #!/usr/bin/env python3
-# https://codebeautify.org/python-formatter-beautifier
-import random
-import json
-import inspect
 import os
 
 from filepath import FilePath
 from filepath import eval_file
 
-CATEGORY_ROOT = os.path.dirname(os.path.realpath(__file__))
-JSON_ROOT = os.path.join(CATEGORY_ROOT, 'json')
+# Load every .py file from data/categories/python/ into __all__ at import time
+_python_root = FilePath().get_categories_python
+__all__ = [
+    eval_file(os.path.join(_python_root, f))
+    for f in sorted(os.listdir(_python_root))
+    if f.endswith('.py')
+]
 
-__all__ = [CONTROL_FREAK, HOMOPHOBIC,
-           JEALOUS, UNFORGIVING,
-           UNJUST, BLOODTHIRSTY
-           ]
 
-
-# HELPERS
 def get_all_categories():
-    """
-    Retrun a list of all categories
-
-    Returns:
-        list: ..of Category objects
-
-    """
-    cats = list()
-    for _category in __all__:
-        cats.append(Category(_category['name']))
-    return cats
+    """Return a list of all Category objects."""
+    return [Category(c['name']) for c in __all__]
 
 
-def __create_all_jsons():
-    """
-    Creates ALL the jsons files for all categories
-
-    """
-    for cat in all_categories():
-        cat._Category__print_json()
+def category_names():
+    """Return a sorted list of all category name strings."""
+    return [c['name'] for c in __all__]
 
 
-def _create_json(name, data):
-    """
-    Creates the actual json file
-    Uses global JSON_ROOT to find json's location
-
-    Args:
-        name (type): name of the file
-        data (dict): The dict you want to print into the json
-
-    Returns:
-        type: description
-
-    """
-    if not os.path.exists(JSON_ROOT):
-        os.mkdir(JSON_ROOT)
-    json_file = os.path.join(JSON_ROOT, f'{name}.json')
-    with open(json_file, 'w') as outfile:
-        json.dump(data, outfile, sort_keys=True, indent=4, ensure_ascii=False)
-    return json_file
-
-
-# The CLASS
 class Category(dict):
     TYPE = None
 
     def __init__(self, category, is_true=False):
-
         self.category = None
         self.is_true = is_true
         for _category in __all__:
@@ -75,7 +34,10 @@ class Category(dict):
                 super(Category, self).__init__(_category)
                 self.category = category
         if not self.category:
-            raise ValueError(f'Could not find given category: {category}')
+            raise ValueError(
+                f'Could not find category: {category!r}. '
+                f'Available: {category_names()}'
+            )
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.category})'
@@ -95,8 +57,8 @@ class Category(dict):
     def create(cls, category):
         return cls(category)
 
-    def __print_json(self):
-        """
-        Create a json file put of the category's python dict(self)
-        """
-        return _create_json(self.category, self)
+    def to_json(self):
+        """Write this category to its JSON file and return the path."""
+        from filepath import _create_json
+        py_file = os.path.join(FilePath().get_categories_python, f'{self.category}.py')
+        return _create_json(py_file, dict(self))
