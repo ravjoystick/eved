@@ -113,6 +113,11 @@
                 40,
                 41,
                 42
+            ],
+            "search": [
+                "God the tailor",
+                "god designs priestly underwear",
+                "god micromanages priest clothing"
             ]
         },
         "6": {
@@ -312,7 +317,10 @@
             "notes": "God controls who lives and who dies, and who becomes rich or poor",
             "book": "1 Samuel",
             "chapter": 2,
-            "verse": -1,
+            "verse": [
+                6,
+                7
+            ],
             "search": [
                 "God really hates some people"
             ]

@@ -1,6 +1,6 @@
 # ETHNIC_CLEANSER =
 {
-    'name': 'ethnic cleanser',
+    'name': 'ethnic_cleanser',
     'nice_name': 'Ethnic Cleanser',
     'dictionary': """
     1. the expulsion,

@@ -204,7 +204,7 @@
             'notes': 'Seven of Saul\'s sons and grandsons are killed to end the famine',
             'book': '2 Samuel',
             'chapter': 21,
-            'verse': [4, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+            'verse': [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
             'search': ['human', 'sacrifice'],
         },
 
@@ -234,7 +234,7 @@
 
         29: {
             'notes': 'The prophet who believed the lie, not the one who told the lie, was killed by a lion',
-            'book': 'Kings 1',
+            'book': '1 Kings',
             'chapter': 13,
             'verse': [18, 19, 20, 21, 22, 23, 24],
             'search': ['unjust'],
@@ -338,7 +338,7 @@
 
         42: {
             'notes': 'God punishes the environment for the supposed "wickedness" of the people',
-            'book': 'Psalm',
+            'book': 'Psalms',
             'chapter': 107,
             'verse': [33, 34],
             'search': ['unjust'],
@@ -402,7 +402,7 @@
 
         50: {
             'notes': 'More death to nonbelievers',
-            'book': 'Psalm',
+            'book': 'Psalms',
             'chapter': 78,
             'verse': [21, 22],
             'search': ['God\'s anger rose against them, he put to death the sturdiest among them'],
@@ -442,7 +442,7 @@
 
         55: {
             'notes': 'The prophet who believed the lie, not the one who told the lie, was killed by a lion',
-            'book': 'Kings 1',
+            'book': '1 Kings',
             'chapter': 13,
             'verse': [18, 19, 20, 21, 22, 23, 24],
             'search': ['indiscriminate'],
