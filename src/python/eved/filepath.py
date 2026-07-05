@@ -11,19 +11,19 @@ Typical usage::
     from filepath import FilePath, create_all_jsons, eval_file
 
     fp = FilePath()
-    print(fp.get_data)            # .../eved/data
-    print(fp.get_categories_json) # .../eved/data/categories/json
+    print(fp.get_data)            # PosixPath('.../eved/data')
+    print(fp.get_categories_json) # PosixPath('.../eved/data/categories/json')
 
     create_all_jsons()            # regenerate all 27 category JSON files
 """
 
 import json
-import os
+from pathlib import Path
 
-# Root of the eved package — one dirname up from this file's location.
+# Root of the eved package — the directory that contains this file.
 # filepath.py lives at  src/python/eved/filepath.py
-# APP_ROOT_FOLDER resolves to  src/python/eved/
-APP_ROOT_FOLDER = os.path.dirname(os.path.realpath(__file__))
+# APP_ROOT resolves to  src/python/eved/
+APP_ROOT = Path(__file__).resolve().parent
 
 DATA_FOLDER = 'data'
 TESTS_FOLDER = 'tests'
@@ -42,7 +42,7 @@ def eval_file(filepath):
     evaluates them with the built-in ``eval``.
 
     Args:
-        filepath (str): Absolute path to the Python literal file.
+        filepath (str | Path): Path to the Python literal file.
 
     Returns:
         Any: The Python object described in the file — typically a ``dict``.
@@ -57,8 +57,7 @@ def eval_file(filepath):
         >>> data[1]['hebrew_say']
         'Alef'
     """
-    with open(filepath, 'r', encoding='utf-8') as fh:
-        return eval(fh.read())
+    return eval(Path(filepath).read_text(encoding='utf-8'))
 
 
 def create_all_jsons():
@@ -69,7 +68,7 @@ def create_all_jsons():
     ``data/categories/json/``.  Existing JSON files are overwritten.
 
     Returns:
-        list[str]: Absolute paths of every JSON file that was written.
+        list[Path]: Paths of every JSON file that was written.
 
     Raises:
         IOError: If the python categories folder does not exist.
@@ -79,19 +78,17 @@ def create_all_jsons():
         >>> written = create_all_jsons()
         >>> len(written) >= 27
         True
-        >>> written[0].endswith('.json')
-        True
+        >>> written[0].suffix
+        '.json'
     """
     python_root = FilePath().get_categories_python
-    if not os.path.exists(python_root):
+    if not python_root.exists():
         raise IOError('Python categories folder not found!')
 
     written = []
-    for filename in os.listdir(python_root):
-        if not filename.endswith('.py'):
-            continue
-        data = eval_file(os.path.join(python_root, filename))
-        written.append(_create_json(os.path.join(python_root, filename), data))
+    for py_file in sorted(python_root.glob('*.py')):
+        data = eval_file(py_file)
+        written.append(_create_json(py_file, data))
     return written
 
 
@@ -99,37 +96,36 @@ def _create_json(filepath, data):
     """Write ``data`` to a JSON file named after the stem of ``filepath``.
 
     The output file is placed in ``data/categories/json/`` regardless of where
-    ``filepath`` lives.  The filename is derived by stripping the directory and
-    extension from ``filepath``.
+    ``filepath`` lives.  The filename is derived from ``filepath``'s stem.
 
     Args:
-        filepath (str): Path to the source ``.py`` file — used only to derive
-            the output filename.
+        filepath (str | Path): Path to the source ``.py`` file — used only to
+            derive the output filename.
         data (dict): The Python dict to serialise as JSON.
 
     Returns:
-        str: Absolute path of the JSON file that was written.
+        Path: Path of the JSON file that was written.
 
     Raises:
         IOError: If the JSON categories folder does not exist.
 
     Example:
-        >>> import os, tempfile
         >>> from filepath import _create_json, FilePath
         >>> sample = {'name': 'test', 'verses': {}}
-        >>> fake_py = os.path.join(FilePath().get_categories_python, 'jealous.py')
+        >>> fake_py = FilePath().get_categories_python / 'jealous.py'
         >>> path = _create_json(fake_py, sample)
-        >>> os.path.basename(path)
+        >>> path.name
         'jealous.json'
     """
     json_root = FilePath().get_categories_json
-    if not os.path.exists(json_root):
+    if not json_root.exists():
         raise IOError('JSON categories folder not found!')
 
-    stem = os.path.basename(filepath).rsplit('.', 1)[0]
-    json_file = os.path.join(json_root, f'{stem}.json')
-    with open(json_file, 'w', encoding='utf-8') as outfile:
-        json.dump(data, outfile, indent=4, ensure_ascii=False)
+    json_file = json_root / (Path(filepath).stem + '.json')
+    json_file.write_text(
+        json.dumps(data, indent=4, ensure_ascii=False),
+        encoding='utf-8',
+    )
     return json_file
 
 
@@ -137,35 +133,37 @@ class FilePath:
     """Resolves absolute paths to every data directory and file in the project.
 
     All paths are derived from the location of this module, so the project
-    can be moved freely on disk without any hardcoded paths.
+    can be moved freely on disk without any hardcoded paths.  All properties
+    return ``pathlib.Path`` objects.
 
     Attributes:
-        root (str): Absolute path to the ``eved`` package root directory
+        root (Path): Absolute path to the ``eved`` package root directory
             (the folder that contains ``data/``).
 
     Example:
         >>> from filepath import FilePath
         >>> fp = FilePath()
-        >>> fp.get_data.endswith('data')
-        True
-        >>> fp.get_categories_python.endswith('python')
-        True
+        >>> fp.get_data.name
+        'data'
+        >>> fp.get_categories_python.name
+        'python'
     """
 
     def __init__(self):
         """Initialise FilePath with the package root resolved from this file."""
-        self.root = APP_ROOT_FOLDER
+        self.root = APP_ROOT
 
     @property
     def get_root(self):
         """Return the absolute path to the eved package root.
 
         Returns:
-            str: Absolute path, e.g. ``/path/to/src/python/eved``.
+            Path: Absolute path, e.g. ``Path('/path/to/src/python/eved')``.
 
         Example:
+            >>> from pathlib import Path
             >>> from filepath import FilePath
-            >>> isinstance(FilePath().get_root, str)
+            >>> isinstance(FilePath().get_root, Path)
             True
         """
         return self.root
@@ -175,19 +173,18 @@ class FilePath:
         """Return the absolute path to the ``data/`` directory.
 
         Returns:
-            str: Absolute path to ``eved/data``.
+            Path: Absolute path to ``eved/data``.
 
         Raises:
             ValueError: If the ``data/`` directory does not exist.
 
         Example:
-            >>> import os
             >>> from filepath import FilePath
-            >>> os.path.isdir(FilePath().get_data)
+            >>> FilePath().get_data.is_dir()
             True
         """
-        data = os.path.join(self.root, DATA_FOLDER)
-        if os.path.exists(data):
+        data = self.root / DATA_FOLDER
+        if data.exists():
             return data
         raise ValueError('Missing data folder!')
 
@@ -196,18 +193,18 @@ class FilePath:
         """Return the absolute path to the ``tests/`` directory.
 
         Returns:
-            str: Absolute path to the tests directory.
+            Path: Absolute path to the tests directory.
 
         Raises:
             ValueError: If the ``tests/`` directory does not exist.
 
         Example:
             >>> from filepath import FilePath
-            >>> isinstance(FilePath().get_tests, str)
-            True
+            >>> FilePath().get_tests.name
+            'tests'
         """
-        tests = os.path.join(self.root, TESTS_FOLDER)
-        if os.path.exists(tests):
+        tests = self.root / TESTS_FOLDER
+        if tests.exists():
             return tests
         raise ValueError('Missing tests folder!')
 
@@ -216,14 +213,14 @@ class FilePath:
         """Return the absolute path to the ``data/categories/`` directory.
 
         Returns:
-            str: Absolute path to ``eved/data/categories``.
+            Path: Absolute path to ``eved/data/categories``.
 
         Example:
             >>> from filepath import FilePath
-            >>> FilePath().get_caterogies.endswith('categories')
-            True
+            >>> FilePath().get_caterogies.name
+            'categories'
         """
-        return os.path.join(self.get_data, CATEGORIES_FOLDER)
+        return self.get_data / CATEGORIES_FOLDER
 
     @property
     def get_categories_python(self):
@@ -233,14 +230,14 @@ class FilePath:
         files for every category.
 
         Returns:
-            str: Absolute path to ``eved/data/categories/python``.
+            Path: Absolute path to ``eved/data/categories/python``.
 
         Example:
             >>> from filepath import FilePath
-            >>> FilePath().get_categories_python.endswith('python')
-            True
+            >>> FilePath().get_categories_python.name
+            'python'
         """
-        return os.path.join(self.get_caterogies, CATEGORIES_TYPE_PYTHON)
+        return self.get_caterogies / CATEGORIES_TYPE_PYTHON
 
     @property
     def get_categories_json(self):
@@ -250,41 +247,39 @@ class FilePath:
         the category data files.
 
         Returns:
-            str: Absolute path to ``eved/data/categories/json``.
+            Path: Absolute path to ``eved/data/categories/json``.
 
         Example:
             >>> from filepath import FilePath
-            >>> FilePath().get_categories_json.endswith('json')
-            True
+            >>> FilePath().get_categories_json.name
+            'json'
         """
-        return os.path.join(self.get_caterogies, CATEGORIES_TYPE_JSON)
+        return self.get_caterogies / CATEGORIES_TYPE_JSON
 
     @property
     def get_books(self):
         """Return the absolute path to the Bible books map file.
 
         Returns:
-            str: Absolute path to ``eved/data/books/map.py``.
+            Path: Absolute path to ``eved/data/books/map.py``.
 
         Example:
-            >>> import os
             >>> from filepath import FilePath
-            >>> os.path.isfile(FilePath().get_books)
+            >>> FilePath().get_books.is_file()
             True
         """
-        return os.path.join(self.get_data, BOOKS_FOLDER, 'map.py')
+        return self.get_data / BOOKS_FOLDER / 'map.py'
 
     @property
     def get_numbers(self):
         """Return the absolute path to the Hebrew numbers map file.
 
         Returns:
-            str: Absolute path to ``eved/data/numbers/map.py``.
+            Path: Absolute path to ``eved/data/numbers/map.py``.
 
         Example:
-            >>> import os
             >>> from filepath import FilePath
-            >>> os.path.isfile(FilePath().get_numbers)
+            >>> FilePath().get_numbers.is_file()
             True
         """
-        return os.path.join(self.get_data, NUMBERS_FOLDER, 'map.py')
+        return self.get_data / NUMBERS_FOLDER / 'map.py'
